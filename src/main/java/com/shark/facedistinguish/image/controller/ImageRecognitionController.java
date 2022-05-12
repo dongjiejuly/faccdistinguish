@@ -8,15 +8,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
-@RequestMapping("/api/v1/image/recognition")
+@RequestMapping("/v1/image/recognition")
 public class ImageRecognitionController {
 
     @Autowired
     private ImageRecognitionService imageRecognitionService;
 
-    @GetMapping(value = "/general")
-    public String basicCharacterGeneral(@RequestParam(value = "path") String path) {
+    /**
+     * 服务器本地路径图片识别
+     * 代码参考地址： https://ai.baidu.com/ai-doc/OCR/Nkibizxlf
+     *
+     * @param path 参数为本地图片路径
+     * @return 识别结果
+     */
+    @GetMapping(value = "/local")
+    public String localImageOcr(@RequestParam(value = "path") String path) {
 //        String path = "/Users/liuxu29/IdeaProjects/image/test.png";
 
         // 校验请求参数不能为空
@@ -24,6 +33,42 @@ public class ImageRecognitionController {
             return "请求参数[path]不能为空";
         }
 
-        return imageRecognitionService.basicCharacterGeneral(path);
+        return imageRecognitionService.localImageOcr(path);
     }
+
+    /**
+     * 远程url图片识别
+     * TODO 需要阿里OSS图片地址用来测试正确性
+     *
+     * @param url url图片识别
+     * @return 识别结果
+     */
+    @GetMapping(value = "/remote")
+    public String urlImageOcr(@RequestParam(value = "url") String url) {
+
+        // 校验请求参数不能为空
+        if (StringUtils.isBlank(url)) {
+            return "请求参数[path]不能为空";
+        }
+
+        return imageRecognitionService.localImageOcr(url);
+    }
+
+    @GetMapping(value = "/local/by/stream")
+    public String localImageOcrByStream(@RequestParam(value = "path") String path) {
+
+        // 校验请求参数不能为空
+        if (StringUtils.isBlank(path)) {
+            return "请求参数[path]不能为空";
+        }
+
+        try {
+            return imageRecognitionService.localImageOcrByStream(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "无法获取到指定路径的文件，请确保文件路劲正确";
+        }
+    }
+
+
 }
