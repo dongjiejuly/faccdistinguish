@@ -1,0 +1,11 @@
+server:
+  port: 8251
+  servlet:
+    context-path: /faceDistinguish
+
+api:
+  baidu:
+    appid: 26213007
+    appkey: iZXKNtqW9I9xf7gODYnpCI7l
+    secretkey: 4aGR1QbzQt6oPYiG0ga5q5GyUci8xx7H
+
