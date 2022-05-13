@@ -18,6 +18,7 @@ public class ImageRecognitionController {
     private ImageRecognitionService imageRecognitionService;
 
     /**
+     * 通用文字识别
      * 服务器本地路径图片识别
      * 代码参考地址： https://ai.baidu.com/ai-doc/OCR/Nkibizxlf
      *
@@ -37,6 +38,7 @@ public class ImageRecognitionController {
     }
 
     /**
+     * 通用文字识别
      * 远程url图片识别
      * TODO 需要阿里OSS图片地址用来测试正确性
      *
@@ -54,6 +56,12 @@ public class ImageRecognitionController {
         return imageRecognitionService.localImageOcr(url);
     }
 
+    /**
+     * 通用文字识别
+     *
+     * @param path 本地图片位置
+     * @return
+     */
     @GetMapping(value = "/local/by/stream")
     public String localImageOcrByStream(@RequestParam(value = "path") String path) {
 
@@ -70,5 +78,49 @@ public class ImageRecognitionController {
         }
     }
 
+    /**
+     * 通用文字识别（高精度版）
+     *
+     * @param path 本地图片位置
+     * @return
+     */
+    @GetMapping(value = "highly/local/by/stream")
+    public String highlyLocalImageOcr(@RequestParam(value = "path") String path,
+                                      @RequestParam(value = "detail", required = false) Boolean detail) {
 
+        // 校验请求参数不能为空
+        if (StringUtils.isBlank(path)) {
+            return "请求参数[path]不能为空";
+        }
+
+        try {
+            return imageRecognitionService.highlyLocalImageOcr(path, detail);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "无法获取到指定路径的文件，请确保文件路劲正确";
+        }
+    }
+
+    /**
+     * 身份证识别
+     *
+     * @param path 本地图片位置
+     * @return
+     */
+    @GetMapping(value = "idCard/local")
+    public String idCardLocalImageOcr(@RequestParam(value = "path") String path,
+                                      @RequestParam(value = "idCardSide") String idCardSide) {
+
+        // 校验请求参数不能为空
+        if (StringUtils.isBlank(path)) {
+            return "请求参数[path]不能为空";
+        }
+
+        try {
+            return imageRecognitionService.idCardLocalImageOcr(path, idCardSide);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "无法获取到指定路径的文件，请确保文件路劲正确";
+        }
+    }
 }

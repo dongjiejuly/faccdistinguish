@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Service
 public class ImageRecognitionServiceImpl implements ImageRecognitionService {
@@ -36,4 +37,33 @@ public class ImageRecognitionServiceImpl implements ImageRecognitionService {
         System.out.println(res.toString(2));
         return res.toString();
     }
+
+    @Override
+    public String highlyLocalImageOcr(String path, Boolean detail) throws IOException {
+//        byte[] bytes = Util.readFileByBytes(path);
+        HashMap<String, String> paramsMap = new HashMap<>();
+        if (Objects.nonNull(detail) && detail) {
+            paramsMap.put("detect_direction", "true");
+            paramsMap.put("probability", "true");
+        }
+        AipOcr client = AipOcrBaidu.getAipOcrClient();
+        JSONObject res = client.basicAccurateGeneral(path, paramsMap);
+        System.out.println(res.toString(2));
+        return res.toString();
+    }
+
+    @Override
+    public String idCardLocalImageOcr(String path, String idCardSide) throws IOException {
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("detect_direction", "true");
+        paramsMap.put("detect_risk", "false");
+
+        AipOcr client = AipOcrBaidu.getAipOcrClient();
+        JSONObject res = client.idcard(path, idCardSide, paramsMap);
+        System.out.println(res.toString(2));
+        return res.toString();
+    }
+
+
 }
